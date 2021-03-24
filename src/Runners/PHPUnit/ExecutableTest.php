@@ -351,7 +351,6 @@ abstract class ExecutableTest
         $builder->setPrefix($binary);
 
         foreach ($options as $key => $value) {
-            var_dump($key, $passthru);
             $builder->add("--$key");
             if ($value !== null) {
                 $builder->add($value);
