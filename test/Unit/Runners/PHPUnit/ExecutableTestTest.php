@@ -61,8 +61,8 @@ class ExecutableTestTest extends \ParaTest\Tests\TestBase
         $finder = new PhpExecutableFinder();
         $phpExecutable = $finder->find();
         $this->assertEquals(
-            "$phpExecutable '-d' 'zend_extension=xdebug.so' '/usr/bin/phpunit' '--prepend' 'xdebug-filter.php' " .
-                "'--bootstrap' 'test/bootstrap.php' 'pathToFile'",
+            "$phpExecutable '-d' 'zend_extension=xdebug.so' '/usr/bin/phpunit' '--bootstrap' 'test/bootstrap.php' " .
+                "'--prepend' 'xdebug-filter.php' 'pathToFile'",
             $command
         );
     }

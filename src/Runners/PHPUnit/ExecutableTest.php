@@ -6,6 +6,7 @@ namespace ParaTest\Runners\PHPUnit;
 
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 abstract class ExecutableTest
 {
@@ -346,35 +347,26 @@ abstract class ExecutableTest
      */
     protected function getCommandString(string $binary, array $options = [], ?string $passthru = null)
     {
-        // The order we add stuff into $arguments is important
-        $arguments = [$binary];
-        // Note:
-        // the arguments MUST come last and we need to "somehow"
-        // merge the passthru string in there.
-        // Thus, we "split" the command creation here.
-        // For a clean solution, we would need to manually parse and verify
-        // the passthru. I'll leave that as a
-        // TODO
-        // @see https://stackoverflow.com/a/34871367/413531
-        // @see https://github.com/symfony/console/blob/68001d4b65139ef4f22da581a8da7be714218aec/Input/StringInput.php
-        $cmd = (new Process($arguments))->getCommandLine();
-        if (!empty($passthru)) {
-            $cmd .= ' ' . $passthru;
-        }
+        $builder = new ProcessBuilder();
+        $builder->setPrefix($binary);
 
-        $arguments = [];
         foreach ($options as $key => $value) {
-            $arguments[] = "--$key";
+            var_dump($key, $passthru);
+            $builder->add("--$key");
             if ($value !== null) {
-                $arguments[] = $value;
+                $builder->add($value);
             }
         }
 
-        $arguments[] = $this->getPath();
+        $cmd = $builder->getProcess()->getCommandLine();
 
-        $args = (new Process($arguments))->getCommandLine();
+        if (!empty($passthru)) {
+            $cmd .= ' ' . $passthru;
+        }
+        
+        $pathX = (new ProcessBuilder())->add($this->getPath())->getProcess()->getCommandLine();
 
-        return $cmd . ' ' . $args;
+        return $cmd .= ' ' . $pathX;
     }
 
     /**
